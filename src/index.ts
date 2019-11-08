@@ -85,7 +85,7 @@ const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) => {
   };
 
   const checkWord = (word: string, dictionary: Dictionary) =>
-    dictionary.regexp?.test(word) || false;
+    dictionary.regexp?.test(word) || false; // eslint-disable-line prettier/prettier
 
   return {
     addWords: (words, dictionaryName = DEF_DICT_NAME) => {
