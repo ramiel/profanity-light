@@ -33,8 +33,8 @@ const buildRegexp = (dictionary: Dictionary) => {
       Object.entries(dictionary.symbolAlternatives).forEach(
         ([char, replaces]) => {
           word = word.replace(
-            new RegExp(`${char}`, 'gmi'), 
-            `(${(replaces.concat(char)).join('|')})`
+            new RegExp(`${char}`, 'gmi'),
+            `(${replaces.concat(char).join('|')})`,
           );
         },
       );
@@ -52,7 +52,7 @@ export const getDefaultDictionary: () => Dictionary = () => ({
     o: ['0'],
     e: ['3', '&', '€', 'é', 'è'],
     a: ['4'],
-    s: ['\\$']
+    s: ['\\$'],
   },
 });
 
@@ -68,29 +68,28 @@ const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) => {
     dictionary,
     // replaceByWord,
     replacer,
-  } = {...defaultConfig, ...config};
+  } = { ...defaultConfig, ...config };
   const dictionaries = new Map<string, Dictionary>();
 
-  if(dictionary) {
+  if (dictionary) {
     dictionaries.set(dictionary.name || DEF_DICT_NAME, dictionary);
   }
-  
+
   const getOrCreateDictionary = (key: string) => {
-    if(dictionaries.has(key)) {
-      return (dictionaries.get(key) as Dictionary);
+    if (dictionaries.has(key)) {
+      return dictionaries.get(key) as Dictionary;
     }
     const dict = getDefaultDictionary();
     dictionaries.set(dict.name, dict);
     return dict;
-  }
+  };
 
   const checkWord = (word: string, dictionary: Dictionary) =>
-    (dictionary.regexp?.test(word)) || false;
+    dictionary.regexp?.test(word) || false;
 
   return {
-    addWords: (words, dictName) => {
-      const key = dictName || DEF_DICT_NAME;
-      const dict = getOrCreateDictionary(key);
+    addWords: (words, dictionaryName = DEF_DICT_NAME) => {
+      const dict = getOrCreateDictionary(dictionaryName);
       dict.words = [...dict.words, ...words];
       dict.regexp = buildRegexp(dict);
     },
@@ -99,16 +98,18 @@ const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) => {
       const words = text.split(' ');
       let found = false;
       let count = 0;
-      while(found === false && count < words.length) {
+      while (found === false && count < words.length) {
         found = checkWord(words[count], dict);
         count += 1;
       }
       return found;
     },
-    sanitize: (text, dictionaryName=DEF_DICT_NAME) => {
+    sanitize: (text, dictionaryName = DEF_DICT_NAME) => {
       const words = text.split(' ');
       const dict = getOrCreateDictionary(dictionaryName);
-      return words.map(word => checkWord(word, dict) ? replacer : word).join(' ');
+      return words
+        .map((word) => (checkWord(word, dict) ? replacer : word))
+        .join(' ');
     },
 
     getDictionary: (name = DEF_DICT_NAME) => getOrCreateDictionary(name),
@@ -116,7 +117,7 @@ const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) => {
     cleanDictionary: (name = DEF_DICT_NAME) => {
       const dict = getOrCreateDictionary(name);
       dict.words = [];
-    }
+    },
   };
 };
 
