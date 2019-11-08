@@ -1,0 +1,18 @@
+{
+  "name": "profanity-light",
+  "version": "0.1.0",
+  "description": "A light profanity checker.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "profanity",
+    "bad",
+    "words",
+    "checker",
+    "sanitize"
+  ],
+  "author": "Fabrizio <ramiel>",
+  "license": "MIT"
+}
