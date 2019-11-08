@@ -9,12 +9,33 @@ interface OverridableProfanityConfig extends ProfanityConfig {}
 type ProfanityFactoryType = (
   cfg?: ProfanityConfig,
 ) => {
+  /**
+   * Check if a text contains profanity. Return true if so.
+   */
   check: (text: string, dictionaryName?: string) => boolean;
+  /**
+   * Sanitize a text replacing all profanity with the configured replacer
+   */
   sanitize: (text: string, dictionaryName?: string) => string;
-  addWords: (words: string[], dictName?: string) => void;
 
+  /**
+   * Add an array of words to a dictionary.
+   * Words can contain regexp like character
+   * i.e.
+   * "flowers?", "bee\w{1}", "s(u|*)cks"
+   */
+  addWords: (words: string[], dictName?: string) => void;
+  /**
+   * Return a dictionary. If no name is provided, the default dictionary is returned
+   */
   getDictionary: (name?: string) => Dictionary;
+  /**
+   * Remove a dictionary from the list of dictionaries
+   */
   removeDictionary: (name?: string) => void;
+  /**
+   * Clean the content of the dictionary by removing all the saved words and regular expression
+   */
   cleanDictionary: (name?: string) => void;
 };
 
@@ -43,6 +64,9 @@ const buildRegexp = (dictionary: Dictionary) => {
     .join('|');
   return new RegExp(`(\\W+|^)(${content})(\\W+|$)`, 'gmi');
 };
+
+const checkWord = (word: string, dictionary: Dictionary) =>
+    dictionary.regexp?.test(word) || false; // eslint-disable-line prettier/prettier
 
 export const getDefaultDictionary: () => Dictionary = () => ({
   name: 'default',
@@ -84,8 +108,7 @@ const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) => {
     return dict;
   };
 
-  const checkWord = (word: string, dictionary: Dictionary) =>
-    dictionary.regexp?.test(word) || false; // eslint-disable-line prettier/prettier
+  
 
   return {
     addWords: (words, dictionaryName = DEF_DICT_NAME) => {
@@ -117,6 +140,7 @@ const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) => {
     cleanDictionary: (name = DEF_DICT_NAME) => {
       const dict = getOrCreateDictionary(name);
       dict.words = [];
+      dict.regexp = buildRegexp(dict);
     },
   };
 };
