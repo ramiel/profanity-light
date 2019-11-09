@@ -1,7 +1,7 @@
 {
   "name": "profanity-light",
   "version": "1.0.0",
-  "description": "A light profanity checker.",
+  "description": "A lightweight profanity and bad words checker/sanitizer.",
   "sideEffects": false,
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -39,5 +39,16 @@
     "rollup-plugin-typescript2": "^0.25.2",
     "ts-jest": "^24.1.0",
     "typescript": "^3.7.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ramiel/profanity-light.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ramiel/profanity-light/issues"
+  },
+  "homepage": "https://github.com/ramiel/profanity-light#readme",
+  "files": [
+    "dist"
+  ]
 }
