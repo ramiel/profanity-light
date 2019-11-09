@@ -127,3 +127,75 @@ filter.sanitize('A flower is a flower', undefined, {replacer: '*'});
 
 // this outputs "A ****** is a ******"
 ```
+
+## Wroking with more dictionaries
+
+You may wat to work with several dictionaries, for example to address different languages. A simple way to do this is to pass a second parameter to each function and specify a dictionary.
+
+```js
+filter.addWords(['fiore', 'ape'], 'it');
+```
+
+Since we never created a dictionary called 'it', it is created on the fly here and then reused. The name has no particular meaning, it's just for you. The dictionary is based on the default one. We'll see later how to create a completely different one, for example to define a different set of symbol replacements.
+
+Here an example of check with two different dictionaries.
+
+```js
+filter.addWords(['fiore', 'ape'], 'it');
+filter.addWords(['fluer', 'abeille'], 'fr');
+
+filter.check('fiore', 'it'); // true, this is a forbidden word in dictionary 'it'
+
+filter.check('fiore', 'fr'); // false, this is allowed in dictionary 'fr'
+```
+
+## Add a dictionary with its rules
+
+You can create a new dictionary with a set of rules
+
+```js
+filter.addDictionary('{
+  name: 'it',
+  words:['fiore', 'ape'],
+  symbolAlternatives: {
+    a: ['4', '@'],
+    // ...
+  }
+});
+```
+
+A good way to create a dictionary is to directly extend the default one
+
+```js
+import { getDefaultDictionary } from 'profanity-light';
+
+const defaultDict = getDefaultDictionary();
+
+filter.addDictionary({
+  ...defaultDict,
+  name: 'it',
+  words: ['fiore', 'ape'],
+  symbolAlternatives: {
+    ...defaultDict,
+    a: [...defaultDict.symbolAlternatives.a, '4', '@'],
+    // ...
+  }
+});
+```
+
+## API
+
+`profanityFactory` is a function that create a filter. It accept an optionl `configuration` object with the following properties
+
+- `dictionary?: Dictionary`  an optional initial dictionary
+- `replacer?: Replacer` A replacer string or function.    
+      i.e. `'***'` or `(word) => word.slice(0,2)`    
+      Default: **'*'**
+- `replaceByWord?: boolean` If true use the replacer to replace the entire word, otherwise the replace will replace each letter of the word. If the replacer is a function this option is ignored.    
+      Default: **true**
+
+A `Dictionary` is an object with the following properties
+
+- `name: string` A mandatory name
+- `words: string[]` A list of words. Can be empty
+- `symbolAlternatives?: { [c: string]: string[] } | null` An optional symbol alternatives list

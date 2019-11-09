@@ -16,7 +16,9 @@ type ProfanityFactoryType = (
    */
   check: (text: string, dictionaryName?: string) => boolean;
   /**
-   * Sanitize a text replacing all profanity with the configured replacer
+   * Sanitize a text replacing all profanity with the configured replacer options.
+   * The replacement options can be overwritten through the last parameter, i.e.
+   * sanitize('a text to check', 'en', {replacer: '#!@', replaceByWord: true})
    */
   sanitize: (text: string, dictionaryName?: string, override?: OverridableProfanityConfig) => string;
 
@@ -24,29 +26,29 @@ type ProfanityFactoryType = (
    * Add an array of words to a dictionary.
    * Words can contain regexp like character
    * i.e.
-   * "flowers?", "bee\w{1}", "s(u|*)cks"
+   * "flowers?", "bee\w{1}", "d(u|*)cks"
    */
-  addWords: (words: string[], dictName?: string) => void;
+  addWords: (words: string[], dictionaryName?: string) => void;
   /**
    * Remove an array of words from a dictionary.
    */
-  removeWords: (words: string[], dictName?: string) => void;
+  removeWords: (words: string[], dictionaryName?: string) => void;
   /**
    * Return a dictionary. If no name is provided, the default dictionary is returned
    */
-  getDictionary: (name?: string) => Dictionary;
+  getDictionary: (dictionaryName?: string) => Dictionary;
   /**
-   * Remove a dictionary from the list of dictionaries
+   * Add a dictionary to the list of dictionaries
    */
   addDictionary: (dictionary: Dictionary) => void;
   /**
    * Remove a dictionary from the list of dictionaries
    */
-  removeDictionary: (name?: string) => void;
+  removeDictionary: (dictionaryName?: string) => void;
   /**
    * Clean the content of the dictionary by removing all the saved words and regular expression
    */
-  cleanDictionary: (name?: string) => void;
+  cleanDictionary: (dictionaryName?: string) => void;
 };
 
 type Dictionary = {
@@ -108,7 +110,7 @@ const defaultConfig = {
 
 const DEF_DICT_NAME = 'default';
 
-const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) => {
+export const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) => {
   const {
     dictionary,
     replaceByWord,
