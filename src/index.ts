@@ -85,10 +85,13 @@ export const getDefaultDictionary: () => Dictionary = () => ({
   words: [],
   regexp: null,
   symbolAlternatives: {
-    o: ['0'],
+    a: ['4', 'à'],
     e: ['3', '&', '€', 'é', 'è'],
-    a: ['4'],
+    i: ['1', 'ì', '\\|'],
+    o: ['0', 'ò'],
+    b: ['8'],
     s: ['\\$'],
+    t: ['7', '\\+'],
   },
 });
 

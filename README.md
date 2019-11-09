@@ -79,7 +79,9 @@ e = e é è 3 € &
 
 Don't worry to define all the possible characters when defining a word. For example the word `flowers?` will be matched also against `fl0wer` and `fl0wer$`!
 
-Each dictionary can have a different set of symbol replacement, but we'll see this later when we'll add custom dictionaried
+Each dictionary can have a different set of symbol replacement, but we'll see this later when we'll add custom dictionaried.
+
+**NOTE**: If a symbol has a meaning in a regexp, it must be escaped, i.e. '\\$'  '\\{'
 
 ## Sanitize
 
