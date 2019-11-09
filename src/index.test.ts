@@ -76,26 +76,105 @@ describe('Profanity Light', () => {
         filter.addWords(['ass']);
         expect(filter.check('assassin')).toBe(false);
       });
+
+      test('a word removed from a dictionary is not considered profanity anymore', () => {
+        filter.addDictionary({ name: 'fr', words: ['fountain', 'verde'] });
+        filter.addWords(['flower', 'bees']);
+        filter.removeWords(['flower']);
+        expect(filter.check('a flower is a flower')).toBe(false);
+      });
     });
 
     describe('replace profanity', () => {
-      test('can replace one profanity', () => {
+      test('can replace one profanity: flower -> ******', () => {
         filter.addWords(['flower', 'bees']);
-        expect(filter.sanitize('a flower')).toEqual('a ***');
+        expect(filter.sanitize('a flower')).toEqual('a ******');
       });
 
-      test('can replace more profanity', () => {
+      test('can replace more profanity: flower -> ******', () => {
         filter.addWords(['flower', 'bees']);
         expect(
           filter.sanitize('a flower is just a flower and nothing else'),
+        ).toEqual('a ****** is just a ****** and nothing else');
+      });
+
+      test('can replace more profanity with some changed letter:  flower$ or flo0wer -> ******', () => {
+        filter.addWords(['flowers?']);
+        expect(
+          filter.sanitize('two flower$ are just a fl0wer and another flower'),
+        ).toEqual('two ******* are just a ****** and another ******');
+      });
+
+      test('can replace profanity by word when the configuration "replaceByWord" is true: flower -> ***', () => {
+        const newFilter = ProfanityFactory({
+          replaceByWord: true,
+          replacer: '***',
+        });
+        newFilter.addWords(['flower']);
+        expect(
+          newFilter.sanitize('a flower is just a flower and nothing else'),
         ).toEqual('a *** is just a *** and nothing else');
       });
 
-      test('can replace more profanity with some changed letter', () => {
-        filter.addWords(['flowers?']);
+      test('can replace profanity using a custom replacer: flower -> rewolf', () => {
+        const newFilter = ProfanityFactory({
+          replacer: (word) =>
+            word
+              .split('')
+              .reverse()
+              .join(''),
+        });
+        newFilter.addWords(['flower']);
         expect(
-          filter.sanitize('a flower$ is just a fl0wer and nothing else'),
-        ).toEqual('a *** is just a *** and nothing else');
+          newFilter.sanitize('a flower is just a flower and nothing else'),
+        ).toEqual('a rewolf is just a rewolf and nothing else');
+      });
+
+      test('can override option for a single call only', () => {
+        const newFilter = ProfanityFactory({
+          replaceByWord: true,
+          replacer: '**',
+        });
+        newFilter.addWords(['flower']);
+        expect(
+          newFilter.sanitize(
+            'a flower is just a flower and nothing else',
+            undefined,
+            { replaceByWord: false },
+          ),
+        ).toEqual('a ************ is just a ************ and nothing else');
+      });
+    });
+
+    describe('use more dictionaries', () => {
+      beforeEach(() => {
+        filter.removeDictionary('fr');
+      });
+
+      test('a new dictionary can be added', () => {
+        expect(() =>
+          filter.addDictionary({ name: 'fr', words: ['fountain', 'verde'] }),
+        ).not.toThrow();
+      });
+
+      test('the same dictionary cannot be added twice', () => {
+        filter.addDictionary({ name: 'fr', words: ['fountain', 'verde'] });
+
+        expect(() =>
+          filter.addDictionary({ name: 'fr', words: ['fountain', 'verde'] }),
+        ).toThrow(`Dictionary "fr" already exists`);
+      });
+
+      test('given two dictionary, a word is considered profanity only in one', () => {
+        filter.addDictionary({ name: 'fr', words: ['fountain', 'verde'] });
+        expect(filter.check('fountain')).toBe(false);
+        expect(filter.check('fountain', 'fr')).toBe(true);
+      });
+
+      test('a word removed from a dictionary is not considered profanity anymore', () => {
+        filter.addDictionary({ name: 'fr', words: ['fountain', 'verde'] });
+        filter.removeWords(['fountain'], 'fr');
+        expect(filter.check('fountain', 'fr')).toBe(false);
       });
     });
   });
