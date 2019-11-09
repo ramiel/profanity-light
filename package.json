@@ -1,12 +1,34 @@
 {
   "name": "profanity-light",
-  "version": "1.0.1",
-  "description": "A lightweight and highly customizable profanity cheker.",
-  "main": ".eslintrc.js",
-  "directories": {
-    "test": "tests"
+  "version": "1.0.0",
+  "description": "A light profanity checker.",
+  "sideEffects": false,
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "NODE_ENV=production rollup -c",
+    "build-watch": "rollup -c -w",
+    "dev": "NODE_ENV=development npm run build-watch",
+    "lint": "eslint . --ext ts,tsx",
+    "test-only": "NODE_ENV=test jest",
+    "test-watch": "npm run test-only -- --watch",
+    "test": "npm run lint && npm run test-only -- --coverage",
+    "prepare": "npm run build"
   },
-  "dependencies": {
+  "keywords": [
+    "profanity",
+    "bad",
+    "words",
+    "checker",
+    "sanitize"
+  ],
+  "author": "Fabrizio <ramiel>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^24.0.22",
+    "@typescript-eslint/eslint-plugin": "^2.6.1",
+    "@typescript-eslint/parser": "^2.6.1",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-jest": "^23.0.3",
@@ -17,23 +39,5 @@
     "rollup-plugin-typescript2": "^0.25.2",
     "ts-jest": "^24.1.0",
     "typescript": "^3.7.2"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ramiel/profanity-light.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ramiel/profanity-light/issues"
-  },
-  "homepage": "https://github.com/ramiel/profanity-light#readme",
-  "files": [
-    "dist"
-  ]
+  }
 }
