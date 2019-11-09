@@ -199,3 +199,59 @@ A `Dictionary` is an object with the following properties
 - `name: string` A mandatory name
 - `words: string[]` A list of words. Can be empty
 - `symbolAlternatives?: { [c: string]: string[] } | null` An optional symbol alternatives list
+
+The `filter` object has the following methods
+
+```js
+/**
+ * Check if a text contains profanity. Return true if so.
+ */
+check: (text: string, dictionaryName?: string) => boolean;
+
+
+/**
+ * Sanitize a text replacing all profanity with the configured replacer options.
+ * The replacement options can be overwritten through the last parameter, i.e.
+ * sanitize('a text to check', 'en', {replacer: '#!@', replaceByWord: true})
+ */
+sanitize: (text: string, dictionaryName?: string, override?: OverridableProfanityConfig) => string;
+
+
+/**
+ * Add an array of words to a dictionary.
+ * Words can contain regexp like character
+ * i.e.
+ * "flowers?", "bee\w{1}", "d(u|*)cks"
+ */
+addWords: (words: string[], dictionaryName?: string) => void;
+
+
+/**
+ * Remove an array of words from a dictionary.
+ */
+removeWords: (words: string[], dictionaryName?: string) => void;
+
+
+/**
+ * Return a dictionary. If no name is provided, the default dictionary is returned
+ */
+getDictionary: (dictionaryName?: string) => Dictionary;
+
+
+/**
+ * Add a dictionary to the list of dictionaries
+ */
+addDictionary: (dictionary: Dictionary) => void;
+
+
+/**
+ * Remove a dictionary from the list of dictionaries
+ */
+removeDictionary: (dictionaryName?: string) => void;
+
+
+/**
+ * Clean the content of the dictionary by removing all the saved words and regular expression
+ */
+cleanDictionary: (dictionaryName?: string) => void;
+```
