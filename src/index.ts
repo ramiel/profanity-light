@@ -6,7 +6,8 @@ interface ProfanityConfig {
   replaceByWord?: boolean;
 }
 
-interface OverridableProfanityConfig extends Pick<ProfanityConfig, 'replacer' | 'replaceByWord'> {}
+interface OverridableProfanityConfig
+  extends Pick<ProfanityConfig, 'replacer' | 'replaceByWord'> {}
 
 export interface ProfanityFilter {
   /**
@@ -18,7 +19,11 @@ export interface ProfanityFilter {
    * The replacement options can be overwritten through the last parameter, i.e.
    * sanitize('a text to check', 'en', {replacer: '#!@', replaceByWord: true})
    */
-  sanitize: (text: string, dictionaryName?: string, override?: OverridableProfanityConfig) => string;
+  sanitize: (
+    text: string,
+    dictionaryName?: string,
+    override?: OverridableProfanityConfig,
+  ) => string;
 
   /**
    * Add an array of words to a dictionary.
@@ -51,11 +56,9 @@ export interface ProfanityFilter {
    * Clean the content of the dictionary by removing all the saved words and regular expression
    */
   cleanDictionary: (dictionaryName?: string) => void;
-} 
+}
 
-type ProfanityFactoryType = (
-  cfg?: ProfanityConfig,
-) => ProfanityFilter;
+type ProfanityFactoryType = (cfg?: ProfanityConfig) => ProfanityFilter;
 
 type Dictionary = {
   name: string;
@@ -101,16 +104,18 @@ export const getDefaultDictionary: (name?: string) => Dictionary = (name) => ({
   },
 });
 
-type GetReplacer = (replacer: Replacer, replaceByWord: boolean) => ((word: string) => string);
+type GetReplacer = (
+  replacer: Replacer,
+  replaceByWord: boolean,
+) => (word: string) => string;
 const getReplacer: GetReplacer = (replacer, replaceByWord) => {
-  if(replacer instanceof Function) {
+  if (replacer instanceof Function) {
     return replacer;
   }
-  return replaceByWord 
+  return replaceByWord
     ? () => replacer
     : (word: string) => replacer.repeat(word.length);
-}
-
+};
 
 const defaultConfig = {
   replaceByWord: false,
@@ -119,12 +124,13 @@ const defaultConfig = {
 
 const DEF_DICT_NAME = 'default';
 
-export const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) => {
-  const {
-    dictionary,
-    replaceByWord,
-    replacer,
-  } = { ...defaultConfig, ...config  };
+export const ProfanityFactory: ProfanityFactoryType = (
+  config = defaultConfig,
+) => {
+  const { dictionary, replaceByWord, replacer } = {
+    ...defaultConfig,
+    ...config,
+  };
   const dictionaries = new Map<string, Dictionary>();
 
   if (dictionary) {
@@ -140,9 +146,6 @@ export const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) =
     return dict;
   };
 
-
-  
-
   return {
     addWords: (words, dictionaryName = DEF_DICT_NAME) => {
       const dict = getOrCreateDictionary(dictionaryName);
@@ -151,7 +154,7 @@ export const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) =
     },
     removeWords: (words, dictionaryName = DEF_DICT_NAME) => {
       const dict = getOrCreateDictionary(dictionaryName);
-      dict.words = dict.words.filter(w => words.indexOf(w) === -1);
+      dict.words = dict.words.filter((w) => words.indexOf(w) === -1);
       dict.regexp = buildRegexp(dict);
     },
     check: (text, dictionaryName = DEF_DICT_NAME) => {
@@ -169,8 +172,10 @@ export const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) =
       const words = text.split(' ');
       const dict = getOrCreateDictionary(dictionaryName);
       const replaceFunc = getReplacer(
-        override.replacer || replacer, 
-        override.replaceByWord !== undefined ? override.replaceByWord : replaceByWord
+        override.replacer || replacer,
+        override.replaceByWord !== undefined
+          ? override.replaceByWord
+          : replaceByWord,
       );
       return words
         .map((word) => (checkWord(word, dict) ? replaceFunc(word) : word))
@@ -180,7 +185,7 @@ export const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) =
       return dictionaries.has(dictionaryName);
     },
     addDictionary: (dictionary) => {
-      if(dictionaries.has(dictionary.name)) {
+      if (dictionaries.has(dictionary.name)) {
         throw new Error(`Dictionary "${dictionary.name}" already exists`);
       }
       dictionary.regexp = buildRegexp(dictionary);
