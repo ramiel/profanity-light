@@ -8,9 +8,7 @@ interface ProfanityConfig {
 
 interface OverridableProfanityConfig extends Pick<ProfanityConfig, 'replacer' | 'replaceByWord'> {}
 
-type ProfanityFactoryType = (
-  cfg?: ProfanityConfig,
-) => {
+export interface ProfanityFilter {
   /**
    * Check if a text contains profanity. Return true if so.
    */
@@ -34,6 +32,10 @@ type ProfanityFactoryType = (
    */
   removeWords: (words: string[], dictionaryName?: string) => void;
   /**
+   * Return true if the dictionary exists
+   */
+  hasDictionary: (dictionaryName: string) => boolean;
+  /**
    * Return a dictionary. If no name is provided, the default dictionary is returned
    */
   getDictionary: (dictionaryName?: string) => Dictionary;
@@ -49,7 +51,11 @@ type ProfanityFactoryType = (
    * Clean the content of the dictionary by removing all the saved words and regular expression
    */
   cleanDictionary: (dictionaryName?: string) => void;
-};
+} 
+
+type ProfanityFactoryType = (
+  cfg?: ProfanityConfig,
+) => ProfanityFilter;
 
 type Dictionary = {
   name: string;
@@ -80,8 +86,8 @@ const buildRegexp = (dictionary: Dictionary) => {
 const checkWord = (word: string, dictionary: Dictionary) =>
     dictionary.regexp?.test(word) || false; // eslint-disable-line prettier/prettier
 
-export const getDefaultDictionary: () => Dictionary = () => ({
-  name: 'default',
+export const getDefaultDictionary: (name?: string) => Dictionary = (name) => ({
+  name: name || 'default',
   words: [],
   regexp: null,
   symbolAlternatives: {
@@ -129,7 +135,7 @@ export const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) =
     if (dictionaries.has(key)) {
       return dictionaries.get(key) as Dictionary;
     }
-    const dict = getDefaultDictionary();
+    const dict = getDefaultDictionary(key);
     dictionaries.set(dict.name, dict);
     return dict;
   };
@@ -169,6 +175,9 @@ export const ProfanityFactory: ProfanityFactoryType = (config = defaultConfig) =
       return words
         .map((word) => (checkWord(word, dict) ? replaceFunc(word) : word))
         .join(' ');
+    },
+    hasDictionary: (dictionaryName) => {
+      return dictionaries.has(dictionaryName);
     },
     addDictionary: (dictionary) => {
       if(dictionaries.has(dictionary.name)) {
