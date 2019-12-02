@@ -19,4 +19,16 @@ export default [
       { file: pkg.module, format: 'es' },
     ],
   },
+
+  // {
+  //   input: 'src/fp.ts',
+  //   external: [...Object.keys(pkg.peerDependencies || {})],
+  //   plugins: [
+  //     typescriptPlugin({
+  //       clean: isProd,
+  //       typescript,
+  //     }),
+  //   ],
+  //   output: [{ file: 'fp.js', format: 'cjs' }],
+  // },
 ];

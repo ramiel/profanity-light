@@ -1,12 +1,12 @@
 type Replacer = string | ((word: string) => string);
 
-interface ProfanityConfig {
+export interface ProfanityConfig {
   dictionary?: Dictionary;
   replacer?: Replacer;
   replaceByWord?: boolean;
 }
 
-interface OverridableProfanityConfig
+export interface OverridableProfanityConfig
   extends Pick<ProfanityConfig, 'replacer' | 'replaceByWord'> {}
 
 export interface ProfanityFilter {
@@ -60,7 +60,7 @@ export interface ProfanityFilter {
 
 type ProfanityFactoryType = (cfg?: ProfanityConfig) => ProfanityFilter;
 
-type Dictionary = {
+export type Dictionary = {
   name: string;
   words: string[];
   regexp?: RegExp | null;
