@@ -83,11 +83,11 @@ const buildRegexp = (dictionary: Dictionary) => {
       return word;
     })
     .join('|');
-  return new RegExp(`(\\W+|^)(${content})(\\W+|$)`, 'gmi');
+  return new RegExp(`(\\W+|^)(${content})(\\W+|$)`, 'mi');
 };
 
 const checkWord = (word: string, dictionary: Dictionary) =>
-    dictionary.regexp?.test(word) || false; // eslint-disable-line prettier/prettier
+  dictionary.regexp?.test(word) || false;
 
 export const getDefaultDictionary: (name?: string) => Dictionary = (name) => ({
   name: name || 'default',
@@ -177,6 +177,7 @@ export const ProfanityFactory: ProfanityFactoryType = (
           ? override.replaceByWord
           : replaceByWord,
       );
+
       return words
         .map((word) => (checkWord(word, dict) ? replaceFunc(word) : word))
         .join(' ');

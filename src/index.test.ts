@@ -144,6 +144,13 @@ describe('Profanity Light', () => {
           ),
         ).toEqual('a ************ is just a ************ and nothing else');
       });
+
+      test('can replace a profanity repeated', () => {
+        filter.addWords(['flowers?']);
+        expect(
+          filter.sanitize('flower flower and flower'),
+        ).toEqual('****** ****** and ******');
+      });
     });
 
     describe('use more dictionaries', () => {
