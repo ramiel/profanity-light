@@ -147,9 +147,9 @@ describe('Profanity Light', () => {
 
       test('can replace a profanity repeated', () => {
         filter.addWords(['flowers?']);
-        expect(
-          filter.sanitize('flower flower and flower'),
-        ).toEqual('****** ****** and ******');
+        expect(filter.sanitize('flower flower and flower')).toEqual(
+          '****** ****** and ******',
+        );
       });
     });
 

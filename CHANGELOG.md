@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.1
+  - Fix not finding repeating bad-words
+
 ## 1.1.0
   - Add `hasDictionary` method
 
