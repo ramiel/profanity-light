@@ -1,4 +1,4 @@
-import ProfanityFactory from './index';
+import ProfanityFactory, { ProfanityFilter } from './index';
 
 describe('Profanity Light', () => {
   test('can be instantiated without arguments', () => {
@@ -183,6 +183,46 @@ describe('Profanity Light', () => {
         filter.removeWords(['fountain'], 'fr');
         expect(filter.check('fountain', 'fr')).toBe(false);
       });
+    });
+  });
+
+  describe('Working with a pre-chosen dictionary', () => {
+    let profanity: ProfanityFilter;
+
+    beforeAll(() => {
+      profanity = ProfanityFactory();
+      profanity.addWords(['fiore', 'ape'], 'it');
+      profanity.addWords(['flower', 'bees']);
+    });
+
+    test('return a subset of functions for the default dictionary', () => {
+      const filter = profanity.getFilterByDictionary();
+      expect(filter).toHaveProperty('check');
+      expect(filter).toHaveProperty('sanitize');
+      expect(filter).toHaveProperty('addWords');
+      expect(filter).toHaveProperty('removeWords');
+      expect(filter).toHaveProperty('getDictionary');
+      expect(filter).toHaveProperty('cleanDictionary');
+    });
+
+    test('return a subset of functions for the "it" dictionary', () => {
+      const filter = profanity.getFilterByDictionary('it');
+      expect(filter).toHaveProperty('check');
+      expect(filter).toHaveProperty('sanitize');
+      expect(filter).toHaveProperty('addWords');
+      expect(filter).toHaveProperty('removeWords');
+      expect(filter).toHaveProperty('getDictionary');
+      expect(filter).toHaveProperty('cleanDictionary');
+    });
+
+    test('"it" dictionary matches fiore', () => {
+      const filter = profanity.getFilterByDictionary('it');
+      expect(filter.check('fiore')).toBe(true);
+    });
+
+    test('"it" dictionary doesnt match flower', () => {
+      const filter = profanity.getFilterByDictionary('it');
+      expect(filter.check('flower')).toBe(false);
     });
   });
 });

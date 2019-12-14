@@ -56,6 +56,20 @@ export interface ProfanityFilter {
    * Clean the content of the dictionary by removing all the saved words and regular expression
    */
   cleanDictionary: (dictionaryName?: string) => void;
+
+  /**
+   * Return a filter with a similar set of functions where the dictionaryName parameter is already defined
+   */
+  getFilterByDictionary: (
+    dictionaryName?: string,
+  ) => {
+    check: (text: string) => boolean;
+    sanitize: (text: string, override?: OverridableProfanityConfig) => string;
+    addWords: (words: string[]) => void;
+    removeWords: (words: string[]) => void;
+    getDictionary: () => Dictionary;
+    cleanDictionary: () => void;
+  };
 }
 
 type ProfanityFactoryType = (cfg?: ProfanityConfig) => ProfanityFilter;
@@ -146,7 +160,7 @@ export const ProfanityFactory: ProfanityFactoryType = (
     return dict;
   };
 
-  return {
+  const filter: ProfanityFilter = {
     addWords: (words, dictionaryName = DEF_DICT_NAME) => {
       const dict = getOrCreateDictionary(dictionaryName);
       dict.words = [...dict.words, ...words];
@@ -199,7 +213,19 @@ export const ProfanityFactory: ProfanityFactoryType = (
       dict.words = [];
       dict.regexp = buildRegexp(dict);
     },
+
+    getFilterByDictionary: (dictionaryName = DEF_DICT_NAME) => ({
+      check: (text) => filter.check(text, dictionaryName),
+      sanitize: (text, override) =>
+        filter.sanitize(text, dictionaryName, override),
+      cleanDictionary: () => filter.cleanDictionary(dictionaryName),
+      addWords: (words) => filter.addWords(words, dictionaryName),
+      getDictionary: () => filter.getDictionary(dictionaryName),
+      removeWords: (words) => filter.removeWords(words, dictionaryName),
+    }),
   };
+
+  return filter;
 };
 
 export default ProfanityFactory;
