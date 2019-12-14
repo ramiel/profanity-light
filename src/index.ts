@@ -6,6 +6,7 @@ interface ProfanityConfig {
   replaceByWord?: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface OverridableProfanityConfig
   extends Pick<ProfanityConfig, 'replacer' | 'replaceByWord'> {}
 
@@ -81,7 +82,7 @@ type Dictionary = {
   symbolAlternatives?: { [c: string]: string[] } | null;
 };
 
-const buildRegexp = (dictionary: Dictionary) => {
+const buildRegexp = (dictionary: Dictionary): RegExp => {
   const content = dictionary.words
     .map((word) => {
       // i.e. replace 'o' with '(o|0)'
@@ -100,7 +101,7 @@ const buildRegexp = (dictionary: Dictionary) => {
   return new RegExp(`(\\W+|^)(${content})(\\W+|$)`, 'mi');
 };
 
-const checkWord = (word: string, dictionary: Dictionary) =>
+const checkWord = (word: string, dictionary: Dictionary): boolean =>
   dictionary.regexp?.test(word) || false;
 
 export const getDefaultDictionary: (name?: string) => Dictionary = (name) => ({
