@@ -130,9 +130,9 @@ filter.sanitize('A flower is a flower', undefined, {replacer: '*'});
 // this outputs "A ****** is a ******"
 ```
 
-## Wroking with more dictionaries
+## Working with more dictionaries
 
-You may wat to work with several dictionaries, for example to address different languages. A simple way to do this is to pass a second parameter to each function and specify a dictionary.
+You may want to work with several dictionaries, for example to address different languages. A simple way to do this is to pass a second parameter to each function and specify a dictionary.
 
 ```js
 filter.addWords(['fiore', 'ape'], 'it');
@@ -178,7 +178,7 @@ filter.addDictionary({
   name: 'it',
   words: ['fiore', 'ape'],
   symbolAlternatives: {
-    ...defaultDict,
+    ...defaultDict.symbolAlternatives,
     a: [...defaultDict.symbolAlternatives.a, '4', '@'],
     // ...
   }
@@ -201,9 +201,9 @@ const filter = filterFactory();
 filter.addWords(['flower'], 'en');
 filter.addWords(['fiore'], 'it');
 
-// Now every method is bound to the 'it' dictionary and you don't need to specify it anymore
 const italianFilter = filter.getFilterByDictionary('it');
 
+// Now every method is bound to the 'it' dictionary and you don't need to specify it anymore
 italianFilter.check('Un fiore per voi, mia signora'); // true
 ```
 
@@ -218,7 +218,7 @@ NOTE: The bounded filters miss the `addDictionary` and `removeDictionary` method
       i.e. `'***'` or `(word) => word.slice(0,2)`    
       Default: **'*'**
 - `replaceByWord?: boolean` If true use the replacer to replace the entire word, otherwise the replace will replace each letter of the word. If the replacer is a function this option is ignored.    
-      Default: **true**
+      Default: **false**
 
 A `Dictionary` is an object with the following properties
 
