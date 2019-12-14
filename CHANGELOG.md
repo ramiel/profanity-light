@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.0
+  - Add dictionary-bounded filters
+
 ## 1.1.1
   - Fix not finding repeating bad-words
 

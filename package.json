@@ -1,6 +1,6 @@
 {
   "name": "profanity-light",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "A lightweight profanity and bad words checker/sanitizer.",
   "sideEffects": false,
   "main": "dist/index.cjs.js",
