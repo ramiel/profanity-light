@@ -34,7 +34,7 @@ import filterFactory from 'profanity-light';
 const filter = filterFactory();
 
 // This filter has an empty dictionary included. Let's add some word
-filter.add(['flower']);
+filter.addWords(['flower']);
 
 // Use check to know if a text contains any forbidden word
 filter.check('A flower is just a flower');
@@ -184,6 +184,30 @@ filter.addDictionary({
   }
 });
 ```
+
+
+## Use a filter bound to a dictionary
+
+If you plan to use one specific dictionary you may find annoying to pass everytime the dictionary.
+You can obtain a filter that is bound to a specific dictionary by using `getFilterByDictionary`.
+
+```js
+import filterFactory from 'profanity-light';
+
+// Instantiate a filter
+const filter = filterFactory();
+
+// This filter has an empty dictionary included. Let's add some word
+filter.addWords(['flower'], 'en');
+filter.addWords(['fiore'], 'it');
+
+// Now every method is bound to the 'it' dictionary and you don't need to specify it anymore
+const italianFilter = filter.getFilterByDictionary('it');
+
+italianFilter.check('Un fiore per voi, mia signora'); // true
+```
+
+NOTE: The bounded filters miss the `addDictionary` and `removeDictionary` methods.
 
 ## API
 
