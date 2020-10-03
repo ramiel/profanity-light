@@ -12,6 +12,8 @@ jobs:
       - checkout
       - run: npm ci
       - run: npm test
+      - store_artifacts:
+            path: coverage
   deploy:
     docker:
       - image: circleci/node:latest
