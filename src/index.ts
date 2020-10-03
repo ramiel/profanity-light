@@ -178,7 +178,7 @@ export const ProfanityFactory: ProfanityFactoryType = (
     },
     sanitize: (text, dictionaryName = DEF_DICT_NAME, override = {}) => {
       const dict = getOrCreateDictionary(dictionaryName);
-      if(!dict.regexp) return text;
+      if (!dict.regexp) return text;
       const replaceFunc = getReplacer(
         override.replacer || replacer,
         override.replaceByWord !== undefined
