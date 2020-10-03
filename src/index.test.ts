@@ -183,6 +183,10 @@ describe('Profanity Light', () => {
           ),
         ).toEqual('the ************* is yellow but the ********** is not red');
       });
+
+      test('with no word, the orginal text is returned', () => {
+        expect(filter.sanitize('a flower')).toEqual('a flower');
+      });
     });
 
     describe('use more dictionaries', () => {
@@ -202,6 +206,21 @@ describe('Profanity Light', () => {
         expect(() =>
           filter.addDictionary({ name: 'fr', words: ['fountain', 'verde'] }),
         ).toThrow(`Dictionary "fr" already exists`);
+      });
+
+      test('a dictionary existence can be checked', () => {
+        filter.addDictionary({ name: 'fr', words: ['fountain', 'verde'] });
+        expect(filter.hasDictionary('fr')).toBe(true);
+      });
+
+      test('a disctionary can be added at definition time', () => {
+        const myfilter = ProfanityFactory({
+          dictionary: {
+            name: 'fr',
+            words: ['fleur'],
+          },
+        });
+        expect(myfilter.hasDictionary('fr')).toBe(true);
       });
 
       test('given two dictionary, a word is considered profanity only in one', () => {
@@ -255,6 +274,29 @@ describe('Profanity Light', () => {
     test('"it" dictionary doesnt match flower', () => {
       const filter = profanity.getFilterByDictionary('it');
       expect(filter.check('flower')).toBe(false);
+    });
+
+    test('"it" dictionary can sanitize a word', () => {
+      const filter = profanity.getFilterByDictionary('it');
+      expect(filter.sanitize('un fiore per te')).toEqual('un ***** per te');
+    });
+
+    test('"it" dictionary can be cleaned', () => {
+      const filter = profanity.getFilterByDictionary('it');
+      filter.cleanDictionary();
+      expect(filter.getDictionary().words).toHaveLength(0);
+    });
+
+    test('a word can be added to "it" dictionary', () => {
+      const filter = profanity.getFilterByDictionary('it');
+      filter.addWords(['mela']);
+      expect(filter.check('mela')).toBe(true);
+    });
+
+    test('a word can be removed to "it" dictionary', () => {
+      const filter = profanity.getFilterByDictionary('it');
+      filter.removeWords(['fiore']);
+      expect(filter.check('fiore')).toBe(false);
     });
   });
 });
