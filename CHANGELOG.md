@@ -1,6 +1,6 @@
 # Changelog
 
-## Next
+## 1.3.0
   - Can define words containing spaces
 
 ## 1.2.0
