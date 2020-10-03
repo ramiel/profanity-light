@@ -90,15 +90,15 @@ const buildRegexp = (dictionary: Dictionary): RegExp => {
       Object.entries(dictionary.symbolAlternatives).forEach(
         ([char, replaces]) => {
           word = word.replace(
-            new RegExp(`${char}`, 'gmi'),
-            `(${replaces.concat(char).join('|')})`,
+            new RegExp(`(?<!\\\\)${char}`, 'gmi'),
+            `(?:${replaces.concat(char).join('|')})`,
           );
         },
       );
       return word;
     })
     .join('|');
-  return new RegExp(`(\\W+|^)(${content})(\\W+|$)`, 'mi');
+  return new RegExp(`(?<=\\W+|^)(${content})(?=\\W+|$)`, 'gmi');
 };
 
 const checkWord = (word: string, dictionary: Dictionary): boolean =>
@@ -174,28 +174,18 @@ export const ProfanityFactory: ProfanityFactoryType = (
     },
     check: (text, dictionaryName = DEF_DICT_NAME) => {
       const dict = getOrCreateDictionary(dictionaryName);
-      const words = text.split(' ');
-      let found = false;
-      let count = 0;
-      while (found === false && count < words.length) {
-        found = checkWord(words[count], dict);
-        count += 1;
-      }
-      return found;
+      return checkWord(text, dict);
     },
     sanitize: (text, dictionaryName = DEF_DICT_NAME, override = {}) => {
-      const words = text.split(' ');
       const dict = getOrCreateDictionary(dictionaryName);
+      if (!dict.regexp) return text;
       const replaceFunc = getReplacer(
         override.replacer || replacer,
         override.replaceByWord !== undefined
           ? override.replaceByWord
           : replaceByWord,
       );
-
-      return words
-        .map((word) => (checkWord(word, dict) ? replaceFunc(word) : word))
-        .join(' ');
+      return text.replace(dict.regexp, replaceFunc);
     },
     hasDictionary: (dictionaryName) => {
       return dictionaries.has(dictionaryName);

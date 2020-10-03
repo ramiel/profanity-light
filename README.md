@@ -56,14 +56,29 @@ filter.check('two flowers'); // true
 Another example in Italian
 
 ```js
-filter.addWords(['can(e|i|gn.+)']);
+filter.addWords(['ca(ne|ni|gn.+)']);
 filter.check('il cane mi morse'); // true
 filter.check('i cani abbaiarono'); // true
 filter.check('le cagne ebbero dei cuccioli'); // true
 filter.check('il cagnolone era immenso'); // true
 ```
 
-This very expressive way of defining words will cover most of the cases. Then remember that people is smart... they will find a way 😉
+You can add a word that contains a space:
+
+
+```js
+filter.addWords(['sun flower']);
+filter.check('the sun flower is yellow'); // true
+```
+
+or arbitrary spaces
+
+```js
+filter.addWords(['sun\\s+flower']);
+filter.check('the sun      flower is yellow'); // true
+```
+
+This very expressive way of defining words will cover most of the cases. Then remember that people are smart... they will find a way 😉
 
 ## Symbol replacement
 

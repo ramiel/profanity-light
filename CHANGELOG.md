@@ -1,5 +1,8 @@
 # Changelog
 
+## Next
+  - Can define words containing spaces
+
 ## 1.2.0
   - Add dictionary-bounded filters
 

@@ -77,6 +77,20 @@ describe('Profanity Light', () => {
         expect(filter.check('assassin')).toBe(false);
       });
 
+      test('can report a word with spaces', () => {
+        filter.addWords(['sun flower', 'car']);
+        expect(
+          filter.check('two bees are on the sun flower in the night'),
+        ).toBe(true);
+      });
+
+      test('can report a word with multiple spaces spaces', () => {
+        filter.addWords(['sun\\s+flower', 'car']);
+        expect(
+          filter.check('two bees are on the sun   flower in the night'),
+        ).toBe(true);
+      });
+
       test('a word removed from a dictionary is not considered profanity anymore', () => {
         filter.addDictionary({ name: 'fr', words: ['fountain', 'verde'] });
         filter.addWords(['flower', 'bees']);
@@ -150,6 +164,24 @@ describe('Profanity Light', () => {
         expect(filter.sanitize('flower flower and flower')).toEqual(
           '****** ****** and ******',
         );
+      });
+
+      test('can replace a profanity that contains a space', () => {
+        filter.addWords(['sun flower']);
+        expect(
+          filter.sanitize(
+            'the sun flower is yellow but the sun flower is not red',
+          ),
+        ).toEqual('the ********** is yellow but the ********** is not red');
+      });
+
+      test('can replace a profanity that contains arbitrary spaces', () => {
+        filter.addWords(['sun\\s+flower']);
+        expect(
+          filter.sanitize(
+            'the sun    flower is yellow but the $un flower is not red',
+          ),
+        ).toEqual('the ************* is yellow but the ********** is not red');
       });
     });
 
