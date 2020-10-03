@@ -84,6 +84,14 @@ describe('Profanity Light', () => {
         ).toBe(true);
       });
 
+      test.only('can report a word with multiple spaces spaces', () => {
+        filter.addWords(['sun\\s+flower', 'car']);
+        console.log(filter.getDictionary());
+        expect(
+          filter.check('two bees are on the sun   flower in the night'),
+        ).toBe(true);
+      });
+
       test('a word removed from a dictionary is not considered profanity anymore', () => {
         filter.addDictionary({ name: 'fr', words: ['fountain', 'verde'] });
         filter.addWords(['flower', 'bees']);

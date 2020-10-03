@@ -90,7 +90,7 @@ const buildRegexp = (dictionary: Dictionary): RegExp => {
       Object.entries(dictionary.symbolAlternatives).forEach(
         ([char, replaces]) => {
           word = word.replace(
-            new RegExp(`${char}`, 'gmi'),
+            new RegExp(`(?<!\\\\)${char}`, 'gmi'),
             `(${replaces.concat(char).join('|')})`,
           );
         },
