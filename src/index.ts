@@ -174,14 +174,7 @@ export const ProfanityFactory: ProfanityFactoryType = (
     },
     check: (text, dictionaryName = DEF_DICT_NAME) => {
       const dict = getOrCreateDictionary(dictionaryName);
-      const words = text.split(' ');
-      let found = false;
-      let count = 0;
-      while (found === false && count < words.length) {
-        found = checkWord(words[count], dict);
-        count += 1;
-      }
-      return found;
+      return checkWord(text, dict);
     },
     sanitize: (text, dictionaryName = DEF_DICT_NAME, override = {}) => {
       const words = text.split(' ');

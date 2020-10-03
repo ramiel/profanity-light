@@ -77,6 +77,13 @@ describe('Profanity Light', () => {
         expect(filter.check('assassin')).toBe(false);
       });
 
+      test('can report a word with spaces', () => {
+        filter.addWords(['sun flower', 'car']);
+        expect(
+          filter.check('two bees are on the sun flower in the night'),
+        ).toBe(true);
+      });
+
       test('a word removed from a dictionary is not considered profanity anymore', () => {
         filter.addDictionary({ name: 'fr', words: ['fountain', 'verde'] });
         filter.addWords(['flower', 'bees']);
