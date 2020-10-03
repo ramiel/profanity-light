@@ -84,9 +84,8 @@ describe('Profanity Light', () => {
         ).toBe(true);
       });
 
-      test.only('can report a word with multiple spaces spaces', () => {
+      test('can report a word with multiple spaces spaces', () => {
         filter.addWords(['sun\\s+flower', 'car']);
-        console.log(filter.getDictionary());
         expect(
           filter.check('two bees are on the sun   flower in the night'),
         ).toBe(true);
@@ -164,6 +163,20 @@ describe('Profanity Light', () => {
         filter.addWords(['flowers?']);
         expect(filter.sanitize('flower flower and flower')).toEqual(
           '****** ****** and ******',
+        );
+      });
+
+      test('can replace a profanity that contains a space', () => {
+        filter.addWords(['sun flower']);
+        expect(filter.sanitize('the sun flower is yellow but the sun flower is not red')).toEqual(
+          'the ********** is yellow but the ********** is not red',
+        );
+      });
+
+      test('can replace a profanity that contains arbitrary spaces', () => {
+        filter.addWords(['sun\\s+flower']);
+        expect(filter.sanitize('the sun    flower is yellow but the $un flower is not red')).toEqual(
+          'the ************* is yellow but the ********** is not red',
         );
       });
     });

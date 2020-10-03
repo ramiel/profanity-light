@@ -91,14 +91,14 @@ const buildRegexp = (dictionary: Dictionary): RegExp => {
         ([char, replaces]) => {
           word = word.replace(
             new RegExp(`(?<!\\\\)${char}`, 'gmi'),
-            `(${replaces.concat(char).join('|')})`,
+            `(?:${replaces.concat(char).join('|')})`,
           );
         },
       );
       return word;
     })
     .join('|');
-  return new RegExp(`(\\W+|^)(${content})(\\W+|$)`, 'mi');
+  return new RegExp(`(?<=\\W+|^)(${content})(?=\\W+|$)`, 'gmi');
 };
 
 const checkWord = (word: string, dictionary: Dictionary): boolean =>
@@ -177,18 +177,15 @@ export const ProfanityFactory: ProfanityFactoryType = (
       return checkWord(text, dict);
     },
     sanitize: (text, dictionaryName = DEF_DICT_NAME, override = {}) => {
-      const words = text.split(' ');
       const dict = getOrCreateDictionary(dictionaryName);
+      if(!dict.regexp) return text;
       const replaceFunc = getReplacer(
         override.replacer || replacer,
         override.replaceByWord !== undefined
           ? override.replaceByWord
           : replaceByWord,
       );
-
-      return words
-        .map((word) => (checkWord(word, dict) ? replaceFunc(word) : word))
-        .join(' ');
+      return text.replace(dict.regexp, replaceFunc);
     },
     hasDictionary: (dictionaryName) => {
       return dictionaries.has(dictionaryName);
