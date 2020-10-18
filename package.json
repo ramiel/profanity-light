@@ -11,7 +11,7 @@
     "build-watch": "rollup -c -w",
     "dev": "NODE_ENV=development npm run build-watch",
     "lint": "eslint . --ext ts,tsx",
-    "test-only": "NODE_ENV=test jest",
+    "test-only": "jest",
     "test-watch": "npm run test-only -- --watch",
     "test": "npm run lint && npm run test-only -- --coverage",
     "prepare": "npm run build"
@@ -38,7 +38,7 @@
     "rollup": "^1.26.3",
     "rollup-plugin-typescript2": "^0.25.2",
     "ts-jest": "^26.4.1",
-    "typescript": "^3.7.2"
+    "typescript": "^4.0.3"
   },
   "repository": {
     "type": "git",
