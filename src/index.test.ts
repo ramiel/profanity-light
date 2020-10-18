@@ -124,6 +124,14 @@ describe('Profanity Light', () => {
         ).toEqual('a ****** is just a ****** and nothing else');
       });
 
+      test('can replace multiple times', () => {
+        filter.addWords(['flower', 'bees']);
+        expect(
+          filter.sanitize('a flower is just a flower and nothing else'),
+        ).toEqual('a ****** is just a ****** and nothing else');
+        expect(filter.sanitize('a flower')).toEqual('a ******');
+      });
+
       test('can replace more profanity with some changed letter:  flower$ or flo0wer -> ******', () => {
         filter.addWords(['flowers?']);
         expect(
