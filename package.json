@@ -7,7 +7,7 @@
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "NODE_ENV=production rollup -c",
+    "build": "rollup -c --environment NODE_ENV:production",
     "build-watch": "rollup -c -w",
     "dev": "NODE_ENV=development npm run build-watch",
     "lint": "eslint . --ext ts,tsx",
