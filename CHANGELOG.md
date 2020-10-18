@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3.1
+  - Calling filter.check multiple times behave as expected
+
 ## 1.3.0
   - Can define words containing spaces
 
