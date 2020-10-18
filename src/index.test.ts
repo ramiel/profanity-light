@@ -27,6 +27,11 @@ describe('Profanity Light', () => {
         expect(filter.check('a flower')).toBe(true);
       });
 
+      test('reports a bad word followed by a symbol', () => {
+        filter.addWords(['flower', 'bees']);
+        expect(filter.check('a flower!')).toBe(true);
+      });
+
       test('reports a bad word before a diacritic sign', () => {
         filter.addWords(['flower', 'bees']);
         expect(filter.check('a flower!')).toBe(true);
@@ -40,6 +45,13 @@ describe('Profanity Light', () => {
       test('given the word "flowers?" reports "flower"', () => {
         filter.addWords(['flowers?', 'bees']);
         expect(filter.check('a flower')).toBe(true);
+      });
+
+      test('can report twice', () => {
+        filter.addWords(['flower', 'bees']);
+        expect(filter.check('a flower')).toBe(true);
+        expect(filter.check('a flower!')).toBe(true);
+        expect(filter.check('a flower and a bee on it')).toBe(true);
       });
 
       test('given the word "flowers?" reports "flowers"', () => {

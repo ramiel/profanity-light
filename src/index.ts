@@ -101,8 +101,13 @@ const buildRegexp = (dictionary: Dictionary): RegExp => {
   return new RegExp(`(?<=\\W+|^)(${content})(?=\\W+|$)`, 'gmi');
 };
 
-const checkWord = (word: string, dictionary: Dictionary): boolean =>
-  dictionary.regexp?.test(word) || false;
+const checkWord = (text: string, dictionary: Dictionary): boolean => {
+  if (!dictionary.regexp) return false;
+  // NOTE: since the regexp has the global modifier, we use str.search instead of regexp.test.
+  // regexp.text would start from the previous matched index regardless of the text
+  // we cannot remove the g flag because we need it in the replace function
+  return text.search(dictionary.regexp) !== -1;
+};
 
 export const getDefaultDictionary: (name?: string) => Dictionary = (name) => ({
   name: name || 'default',
