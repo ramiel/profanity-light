@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3.2
+  - Some fix to the README
+
 ## 1.3.1
   - Calling filter.check multiple times behave as expected
 
