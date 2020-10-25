@@ -94,7 +94,7 @@ e = e é è 3 € &
 
 Don't worry to define all the possible characters when defining a word. For example the word `flowers?` will be matched also against `fl0wer` and `fl0wer$`!
 
-Each dictionary can have a different set of symbol replacement, but we'll see this later when we'll add custom dictionaried.
+Each dictionary can have a different set of symbol replacement, but we'll see this later when we'll add custom dictionaries.
 
 **NOTE**: If a symbol has a meaning in a regexp, it must be escaped, i.e. '\\$'  '\\{'
 
@@ -171,7 +171,7 @@ filter.check('fiore', 'fr'); // false, this is allowed in dictionary 'fr'
 You can create a new dictionary with a set of rules
 
 ```js
-filter.addDictionary('{
+filter.addDictionary({
   name: 'it',
   words:['fiore', 'ape'],
   symbolAlternatives: {
@@ -226,7 +226,7 @@ NOTE: The bounded filters miss the `addDictionary` and `removeDictionary` method
 
 ## API
 
-`profanityFactory` is a function that create a filter. It accept an optionl `configuration` object with the following properties
+`profanityFactory` is a function that creates a filter. It accepts an optionl `configuration` object with the following properties
 
 - `dictionary?: Dictionary`  an optional initial dictionary
 - `replacer?: Replacer` A replacer string or function.    
